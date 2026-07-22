@@ -176,7 +176,7 @@ export const CommunityPage = () => {
     <div className="community-page relative">
       <section className="community-hero">
         <div>
-          <p className="dash-kicker">DREAM & INFINITY COMMUNITY</p>
+          <p className="dash-kicker">DREAM INFINITY COMMUNITY</p>
           <h1>Prepare together. <span>Get hired smarter.</span></h1>
           <p>Real interview intelligence from candidates, mentors, and professionals — organized around the companies you care about.</p>
         </div>
@@ -254,7 +254,7 @@ export const CommunityPage = () => {
                     <header>
                       <div className="post-avatar">{post.author?.name?.[0] || 'D'}</div>
                       <div>
-                        <b>{post.author?.name || 'Dream & Infinity member'}</b>
+                        <b>{post.author?.name || 'Dream Infinity member'}</b>
                         <small>{time(post.createdAt)}</small>
                       </div>
                       <div className="ml-auto flex items-center gap-2">
@@ -462,7 +462,7 @@ export const CommunityPage = () => {
                           <div className="h-5 w-5 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-[10px] font-bold text-white">
                             {comment.author?.name?.[0] || 'D'}
                           </div>
-                          <span className="text-xs font-semibold text-white">{comment.author?.name || 'Dream & Infinity member'}</span>
+                          <span className="text-xs font-semibold text-white">{comment.author?.name || 'Dream Infinity member'}</span>
                           <span className="text-[9px] text-gray-500 ml-auto">{time(comment.createdAt)}</span>
                         </div>
 

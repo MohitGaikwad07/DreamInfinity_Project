@@ -1,6 +1,6 @@
-# Dream & Infinity — Interview Preparation Platform
+# Dream Infinity — Interview Preparation Platform
 
-Dream & Infinity is a scalable SaaS foundation for AI-assisted placement and technical-interview preparation. This repository intentionally contains architecture and configuration only; authentication, APIs, and UI screens are deferred to later implementation phases.
+Dream Infinity is a scalable SaaS foundation for AI-assisted placement and technical-interview preparation. This repository intentionally contains architecture and configuration only; authentication, APIs, and UI screens are deferred to later implementation phases.
 
 ## Technology
 

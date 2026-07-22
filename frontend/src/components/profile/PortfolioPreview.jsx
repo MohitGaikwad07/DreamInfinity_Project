@@ -46,7 +46,7 @@ export const PortfolioPreview = ({ profile, activity }) => {
             </div>
             <div>
               <h3 className="text-xs font-bold text-white">{activity?.user?.name || 'Professional User'}</h3>
-              <p className="text-[10px] text-violet-300 font-semibold">{profile?.headline || 'Interview Candidate @ Dream & Infinity'}</p>
+              <p className="text-[10px] text-violet-300 font-semibold">{profile?.headline || 'Interview Candidate @ Dream Infinity'}</p>
               <p className="text-[9px] text-violet-100/50 mt-1">{profile?.location || 'Location not configured'}</p>
             </div>
           </div>

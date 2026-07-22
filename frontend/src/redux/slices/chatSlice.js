@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, nanoid } from '@reduxjs/toolkit';
 import { aiService } from '../../services/aiService.js';
 
-const welcome = { id: 'welcome', role: 'assistant', content: "Hi! I’m Dream & Infinity, your career mentor. I can help you prepare for interviews, understand technical topics, improve your resume, and build a focused learning plan.", createdAt: new Date().toISOString() };
+const welcome = { id: 'welcome', role: 'assistant', content: "Hi! I’m Dream Infinity, your career mentor. I can help you prepare for interviews, understand technical topics, improve your resume, and build a focused learning plan.", createdAt: new Date().toISOString() };
 const errorMessage = (error) => error?.errors?.[0]?.msg || error?.message || 'The AI assistant could not respond. Please try again.';
 
 export const sendChatMessage = createAsyncThunk('chat/send', async ({ prompt, context }, { getState, rejectWithValue }) => {

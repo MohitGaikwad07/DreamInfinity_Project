@@ -31,7 +31,7 @@ export const PublicProfilePage = () => {
     if (!publicProfile) return;
     
     const summaryText = `
-DREAM & INFINITY CAREER PORTFOLIO SUMMARY
+DREAM INFINITY CAREER PORTFOLIO SUMMARY
 ==================================
 Name: ${publicActivity?.user?.name || 'Professional User'}
 Role: ${publicProfile.headline || 'Software Engineer'}
@@ -102,7 +102,7 @@ ${publicProfile.projects?.map(p => `- ${p.title}: ${p.description || ''}`).join(
   if (!publicProfile) return null;
 
   const portfolioUrl = window.location.href;
-  const shareText = `Check out ${publicActivity?.user?.name || 'my'} professional AI Career Portfolio on Dream & Infinity!`;
+  const shareText = `Check out ${publicActivity?.user?.name || 'my'} professional AI Career Portfolio on Dream Infinity!`;
 
   return (
     <div className="public-portfolio-wrapper">
@@ -165,7 +165,7 @@ ${publicProfile.projects?.map(p => `- ${p.title}: ${p.description || ''}`).join(
                   <FiMessageCircle className="text-base mb-1" /> WhatsApp
                 </a>
                 <a 
-                  href={`mailto:?subject=${encodeURIComponent('Dream & Infinity Career Portfolio')}&body=${encodeURIComponent(shareText + '\n\n' + portfolioUrl)}`}
+                  href={`mailto:?subject=${encodeURIComponent('Dream Infinity Career Portfolio')}&body=${encodeURIComponent(shareText + '\n\n' + portfolioUrl)}`}
                   className="flex flex-col items-center justify-center p-2.5 bg-white/5 border border-white/10 hover:border-violet-600/30 rounded-xl text-violet-300 transition-all text-xs"
                 >
                   <FiMail className="text-base mb-1" /> Email

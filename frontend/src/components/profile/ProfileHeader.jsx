@@ -87,7 +87,7 @@ export const ProfileHeader = ({ profile, activity, isPublic = false }) => {
             </span>
           </div>
           
-          <p className="text-violet-300 font-medium text-sm md:text-base mt-1.5">{headline || 'Interview Candidate @ Dream & Infinity'}</p>
+          <p className="text-violet-300 font-medium text-sm md:text-base mt-1.5">{headline || 'Interview Candidate @ Dream Infinity'}</p>
           
           {bio && <p className="text-violet-100/70 text-sm mt-3.5 max-w-2xl leading-relaxed">{bio}</p>}
           

@@ -182,7 +182,7 @@ export const ProjectCards = ({ projects = [], isPublic = false }) => {
                   type="text" 
                   value={title} 
                   onChange={(e) => setTitle(e.target.value)} 
-                  placeholder="e.g. Dream & Infinity Core Platform" 
+                  placeholder="e.g. Dream Infinity Core Platform" 
                   className="field mt-1" 
                   required 
                 />
