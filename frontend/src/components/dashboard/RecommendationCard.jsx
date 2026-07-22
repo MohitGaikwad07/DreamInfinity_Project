@@ -1,0 +1,3 @@
+import { FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
+const items = [['Improve Docker','Container fundamentals · 35 min'],['Practice SQL','Window functions · 20 min'],['Complete React Interview','Frontend architecture · 45 min']];
+export const RecommendationCard = () => <section className="dash-card recommendation-card"><div className="flex items-center justify-between"><div><p className="dash-kicker">AI COACH</p><h3>Recommended for you</h3></div><FiArrowUpRight className="text-violet-300" /></div><div className="mt-5 space-y-3">{items.map(([title,detail]) => <button key={title} className="recommendation"><FiCheckCircle /><span><b>{title}</b><small>{detail}</small></span></button>)}</div></section>;

@@ -1,0 +1,2 @@
+import { FiMessageSquare, FiPlus, FiTrash2 } from 'react-icons/fi';
+export const ChatSidebar = ({ conversations, onNew }) => <aside className="chat-sidebar"><button className="new-chat-button" onClick={onNew}><FiPlus /> New chat</button><p>RECENT</p><div>{conversations.map((chat) => <button className="conversation-item" key={chat.id}><FiMessageSquare /><span>{chat.title}</span></button>)}</div><button className="chat-clear" onClick={onNew}><FiTrash2 /> Clear current chat</button></aside>;

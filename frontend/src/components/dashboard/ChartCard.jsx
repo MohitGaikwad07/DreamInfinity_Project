@@ -1,0 +1,1 @@
+export const ChartCard = ({ title, subtitle, children, className = '' }) => <section className={`dash-card chart-card ${className}`}><header><div><h3>{title}</h3>{subtitle && <p>{subtitle}</p>}</div><span className="chart-dot" /></header>{children}</section>;

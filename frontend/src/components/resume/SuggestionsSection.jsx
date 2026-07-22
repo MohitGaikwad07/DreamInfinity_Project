@@ -1,0 +1,2 @@
+import { FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
+export const SuggestionsSection = ({ suggestions = [] }) => <section className="resume-panel suggestion-panel"><header><div><p className="dash-kicker">AI FEEDBACK</p><h3>High-impact improvements</h3></div><FiArrowUpRight/></header><div className="suggestion-list">{suggestions.length ? suggestions.map((suggestion, index) => <div key={suggestion}><span>{index + 1}</span><p>{suggestion}</p><FiCheckCircle/></div>) : <p className="empty-copy">Your tailored suggestions will appear after analysis.</p>}</div></section>;

@@ -1,0 +1,4 @@
+import { useState } from 'react';
+import { FiArrowUp, FiPaperclip } from 'react-icons/fi';
+
+export const ChatInput = ({ onSend, loading }) => { const [value, setValue] = useState(''); const submit = (event) => { event.preventDefault(); const prompt = value.trim(); if (!prompt || loading) return; onSend(prompt); setValue(''); }; return <form className="chat-input" onSubmit={submit}><button type="button" title="Attachments coming soon"><FiPaperclip /></button><textarea value={value} onChange={(event) => setValue(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submit(event); } }} placeholder="Ask about interviews, careers, coding, or learning…" rows="1" /><button className="send-button" disabled={!value.trim() || loading} aria-label="Send message"><FiArrowUp /></button></form>; };

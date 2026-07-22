@@ -1,0 +1,1 @@
+export const InterviewTimer=({seconds,duration})=>{const min=Math.floor(seconds/60).toString().padStart(2,'0');const sec=(seconds%60).toString().padStart(2,'0');return <div className="interview-timer"><span>● LIVE</span><b>{min}:{sec}</b><small>/ {duration} min</small></div>};

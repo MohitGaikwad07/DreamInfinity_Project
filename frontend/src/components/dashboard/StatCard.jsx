@@ -1,0 +1,2 @@
+import { motion } from 'framer-motion';
+export const StatCard = ({ title, value, trend, icon: Icon, index }) => <motion.article initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * .04 }} className="dash-card stat-card"><div className="flex items-start justify-between"><span className="stat-icon"><Icon /></span><span className="text-xs text-emerald-300">{trend}</span></div><p>{title}</p><strong>{value}</strong></motion.article>;

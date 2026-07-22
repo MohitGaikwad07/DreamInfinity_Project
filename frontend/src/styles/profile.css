@@ -1,0 +1,297 @@
+/* Career Dashboard & Portfolio Layout */
+.profile-container {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media(min-width: 1024px) {
+  .profile-container {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+/* Banner & Header styling */
+.profile-banner-wrapper {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e1b4b, #311042);
+  height: 180px;
+}
+
+.profile-banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar-overlay {
+  position: absolute;
+  bottom: -45px;
+  left: 24px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid #0d0c13;
+  overflow: hidden;
+  background: #1e1b4b;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.profile-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-header-content {
+  padding: 60px 24px 24px;
+}
+
+/* Availability Badge */
+.availability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.availability-badge.actively_looking {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.availability-badge.open {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+.availability-badge.not_looking {
+  background: rgba(156, 163, 175, 0.15);
+  color: #9ca3af;
+  border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+/* Circular Charts */
+.score-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+@media(min-width: 640px) {
+  .score-charts-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media(min-width: 1200px) {
+  .score-charts-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.circular-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+}
+
+.circular-chart-wrapper:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-2px);
+}
+
+.circular-chart {
+  width: 76px;
+  height: 76px;
+}
+
+.circular-chart path.bg {
+  stroke: rgba(255, 255, 255, 0.07);
+}
+
+.circular-chart path.bar {
+  stroke: url(#chart-gradient);
+  stroke-linecap: round;
+}
+
+.circular-chart-text {
+  fill: #fff;
+  font-family: inherit;
+  font-size: 0.55rem;
+  font-weight: 800;
+  text-anchor: middle;
+}
+
+/* Achievement Grid */
+.achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media(min-width: 640px) {
+  .achievement-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Cards & Hover details */
+.hover-action-card {
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+.hover-action-card .card-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.2s ease;
+  display: flex;
+  gap: 0.4rem;
+}
+.hover-action-card:hover .card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tabs */
+.profile-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+.profile-tab {
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(237, 233, 254, 0.6);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.profile-tab.active {
+  color: #a78bfa;
+  border-color: #8b5cf6;
+}
+
+/* Public Portfolio Page Styles */
+.public-portfolio-wrapper {
+  min-height: 100vh;
+  background: radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 40%),
+              radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.1), transparent 35%),
+              #07060b;
+  color: #f5f3ff;
+}
+
+.public-container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+/* Print CSS */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt !important;
+  }
+  
+  .dashboard-app,
+  .dashboard-sidebar,
+  .dashboard-topbar,
+  .floating-ai,
+  .card-actions,
+  .profile-tabs,
+  button,
+  form,
+  .no-print {
+    display: none !important;
+  }
+
+  .dashboard-main {
+    margin-left: 0 !important;
+  }
+  
+  .public-portfolio-wrapper {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  
+  .public-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  
+  .glass-card {
+    background: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 1.5rem !important;
+    color: #000 !important;
+    backdrop-filter: none !important;
+  }
+  
+  .gradient-text {
+    background: none !important;
+    color: #000 !important;
+    -webkit-background-clip: unset !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    page-break-after: avoid;
+  }
+
+  .score-charts-grid {
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  
+  .circular-chart-wrapper {
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+    color: #000 !important;
+    padding: 0.5rem !important;
+  }
+  
+  .circular-chart-text {
+    fill: #000 !important;
+  }
+  
+  .circular-chart path.bg {
+    stroke: #eee !important;
+  }
+  
+  .circular-chart path.bar {
+    stroke: #000 !important;
+  }
+  
+  .availability-badge {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    background: none !important;
+  }
+  
+  a {
+    text-decoration: underline !important;
+    color: #000 !important;
+  }
+}

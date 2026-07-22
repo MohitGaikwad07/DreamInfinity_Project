@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { body } from 'express-validator';
+import { bookmark, bookmarks, comments, company, createComment, createPost, feed, follow, insights, report, vote, updatePost, deletePost, updateComment, deleteComment } from '../controllers/communityController.js';
+import { requireAuth } from '../middleware/authMiddleware.js';
+import { validateRequest } from '../validators/auth.validator.js';
+export const communityRouter = Router();
+communityRouter.use(requireAuth);
+communityRouter.get('/feed', feed); communityRouter.get('/company/:company', company); communityRouter.get('/comments/:postId', comments); communityRouter.get('/bookmarks', bookmarks); communityRouter.get('/insights', insights);
+communityRouter.post('/post', [body('title').trim().isLength({ min: 4, max: 180 }), body('content').trim().isLength({ min: 10, max: 20000 }), body('type').optional().isIn(['experience', 'question', 'discussion', 'poll', 'article', 'news', 'guide', 'tip', 'notes', 'resource']), validateRequest], createPost);
+communityRouter.put('/post/:id', [body('title').optional().trim().isLength({ min: 4, max: 180 }), body('content').optional().trim().isLength({ min: 10, max: 20000 }), validateRequest], updatePost);
+communityRouter.delete('/post/:id', deletePost);
+communityRouter.post('/comment', [body('post').isMongoId(), body('body').trim().isLength({ min: 1, max: 5000 }), validateRequest], createComment);
+communityRouter.put('/comment/:id', [body('body').trim().isLength({ min: 1, max: 5000 }), validateRequest], updateComment);
+communityRouter.delete('/comment/:id', deleteComment);
+communityRouter.post('/vote', [body('targetType').isIn(['post', 'comment']), body('target').isMongoId(), body('value').isInt({ min: -1, max: 1 }).not().equals(0), validateRequest], vote); communityRouter.post('/bookmark', bookmark); communityRouter.post('/follow', follow); communityRouter.post('/report', [body('post').isMongoId(), body('reason').isIn(['spam', 'fake_experience', 'abuse', 'duplicate', 'other']), validateRequest], report);

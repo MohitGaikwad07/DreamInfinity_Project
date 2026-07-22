@@ -1,0 +1,2 @@
+const users = [['1','Aarav Mehta','2,840','🏅'],['2','Sara Khan','2,610','🥈'],['3','Rohan Das','2,480','🥉'],['4','Isha Rao','2,340','✨'],['5','You','1,920','⚡']];
+export const LeaderboardCard = () => <section className="dash-card leaderboard-card"><header><h3>Leaderboard</h3><button>View all</button></header><div className="mt-3">{users.map(([rank,name,xp,badge]) => <div className={`leader-row ${name === 'You' ? 'you' : ''}`} key={name}><span>{rank}</span><b>{name}</b><em>{badge}</em><small>{xp} XP</small></div>)}</div></section>;

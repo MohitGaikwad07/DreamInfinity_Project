@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { body } from 'express-validator';
+import { history, leaderboard, questions, run, submit } from '../controllers/codingController.js';
+import { requireAuth } from '../middleware/authMiddleware.js';
+import { aiRateLimiter } from '../middleware/rateLimiter.js';
+import { validateRequest } from '../validators/auth.validator.js';
+export const codingRouter = Router();
+codingRouter.use(requireAuth, aiRateLimiter);
+codingRouter.get('/questions', questions); codingRouter.get('/history', history); codingRouter.get('/leaderboard', leaderboard);
+const codeValidation = [body('language').isString().trim().notEmpty(), body('code').isString().isLength({ min: 1, max: 100000 }), body('input').optional().isString(), validateRequest];
+codingRouter.post('/run', codeValidation, run); codingRouter.post('/submit', [...codeValidation, body('questionId').isString().trim().notEmpty(), body('mode').optional().isIn(['practice', 'interview', 'contest', 'company_assessment']), validateRequest], submit);

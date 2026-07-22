@@ -1,0 +1,2 @@
+import { apiClient } from './apiClient.js';
+export const codingService = { questions: () => apiClient.get('/coding/questions').then(({ data }) => data), run: (payload) => apiClient.post('/coding/run', payload).then(({ data }) => data), submit: (payload) => apiClient.post('/coding/submit', payload).then(({ data }) => data), history: () => apiClient.get('/coding/history').then(({ data }) => data), leaderboard: () => apiClient.get('/coding/leaderboard').then(({ data }) => data) };

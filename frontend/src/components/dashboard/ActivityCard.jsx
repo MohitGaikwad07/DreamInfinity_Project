@@ -1,0 +1,3 @@
+import { FiCode, FiFileText, FiMessageSquare, FiMic } from 'react-icons/fi';
+const activities = [[FiMic,'Completed Amazon mock interview','Scored 84% · 2 hours ago'],[FiCode,'Solved “Number of Islands”','Graph practice · Yesterday'],[FiFileText,'Resume analysis complete','Score improved to 82% · Yesterday'],[FiMessageSquare,'Shared a community insight','Google interview discussion · 2 days ago']];
+export const ActivityCard = () => <section className="dash-card activity-card"><h3>Recent activity</h3><div className="mt-4 space-y-4">{activities.map(([Icon,title,meta]) => <div className="activity-row" key={title}><span><Icon /></span><div><b>{title}</b><small>{meta}</small></div></div>)}</div></section>;

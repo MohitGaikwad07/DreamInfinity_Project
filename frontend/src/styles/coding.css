@@ -1,0 +1,358 @@
+/* Coding Platform IDE Styles */
+
+.coding-layout {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  margin-top: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .coding-layout {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+}
+
+.workspace-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem;
+  background: rgba(22, 19, 35, 0.5);
+  backdrop-filter: blur(12px);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+}
+
+.workspace-panel.editor-panel {
+  padding: 0;
+  overflow: hidden;
+  border-color: rgba(139, 92, 246, 0.15);
+}
+
+.panel-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.85rem 1.25rem;
+  background: rgba(16, 14, 26, 0.6);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Problem selector & details styling */
+.problem-dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.problem-select {
+  background: rgba(8, 7, 14, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: white;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+}
+
+.problem-select:focus {
+  border-color: #8b5cf6;
+}
+
+.difficulty-badge {
+  font-size: 0.62rem;
+  font-weight: 800;
+  border-radius: 1rem;
+  padding: 0.2rem 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.difficulty-badge.easy {
+  background: rgba(52, 211, 153, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
+.difficulty-badge.medium {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+.difficulty-badge.hard {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Workspace tab styling */
+.workspace-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.55rem;
+}
+
+.workspace-tab {
+  border: 0;
+  background: transparent;
+  color: rgba(237, 233, 254, 0.5);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.workspace-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.workspace-tab.tab-active {
+  color: #a78bfa;
+  background: rgba(139, 92, 246, 0.15);
+}
+
+/* Problem description pane styles */
+.pane-content {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 1.25rem;
+}
+
+.pane-content h3 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: white;
+  margin-top: 1.25rem;
+}
+
+.pane-content p {
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: rgba(237, 233, 254, 0.8);
+}
+
+.pane-content pre {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.6rem;
+  padding: 0.85rem 1rem;
+  color: #34d399;
+  font-family: ui-monospace, monospace;
+  font-size: 0.76rem;
+  margin-top: 0.5rem;
+}
+
+/* Custom Console Drawer */
+.console-wrapper {
+  margin-top: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  background: rgba(11, 10, 18, 0.85);
+  padding: 1.25rem;
+}
+
+.console-header {
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(237, 233, 254, 0.5);
+  margin-bottom: 0.85rem;
+}
+
+.console-result {
+  border-radius: 0.75rem;
+  padding: 1rem;
+  font-size: 0.76rem;
+  font-family: ui-monospace, monospace;
+  line-height: 1.5;
+  margin-top: 0.75rem;
+}
+
+.console-result.status-accepted {
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  color: #34d399;
+}
+
+.console-result.status-error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.console-result.status-compilation {
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+/* Submission history card styling */
+.submission-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.75rem 0.25rem;
+}
+
+.submission-row:last-child {
+  border: 0;
+}
+
+.submission-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.submission-meta b {
+  font-size: 0.8rem;
+  color: white;
+}
+
+.submission-meta span {
+  font-size: 0.65rem;
+  color: rgba(237, 233, 254, 0.45);
+}
+
+.submission-score {
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(139, 92, 246, 0.12);
+  color: #c4b5fd;
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.45rem;
+}
+
+/* Leaderboard list styles */
+.rank-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  padding: 0.65rem 0.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rank-row:last-child {
+  border: 0;
+}
+
+.rank-row span {
+  color: rgba(237, 233, 254, 0.45);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.rank-row b {
+  font-size: 0.78rem;
+  color: white;
+}
+
+.rank-row strong {
+  font-size: 0.74rem;
+  color: #a78bfa;
+}
+
+/* AI review section styling */
+.ai-review-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ai-review-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.85rem;
+}
+
+.ai-review-header h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #a78bfa;
+}
+
+.ai-review-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .ai-review-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.ai-review-metric {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.65rem;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.ai-review-metric small {
+  display: block;
+  font-size: 0.58rem;
+  color: rgba(237, 233, 254, 0.45);
+  text-transform: uppercase;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+}
+
+.ai-review-metric b {
+  display: block;
+  font-size: 0.85rem;
+  color: white;
+  margin-top: 0.25rem;
+}
+
+.ai-review-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ai-review-notes section {
+  background: rgba(139, 92, 246, 0.05);
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  border-radius: 0.85rem;
+  padding: 1rem;
+}
+
+.ai-review-notes h5 {
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #c4b5fd;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.ai-review-notes ul {
+  list-style-type: disc;
+  padding-left: 1.15rem;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(237, 233, 254, 0.85);
+}
+
+.ai-review-notes li {
+  margin-bottom: 0.45rem;
+}
+
+.ai-review-notes li:last-child {
+  margin-bottom: 0;
+}
