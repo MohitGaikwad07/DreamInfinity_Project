@@ -419,17 +419,17 @@ export const VideoInterviewPage = () => {
   return (
     <div ref={containerRef} className={`flex flex-col bg-[#08070e] text-white ${isFullscreen ? 'h-screen w-screen p-4' : 'h-[calc(100vh-90px)]'}`}>
       {/* Redesigned Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#110f1c] flex-shrink-0">
-        <div className="flex items-center gap-3">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 md:px-6 gap-3 border-b border-white/10 bg-[#110f1c] flex-shrink-0">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="h-3 w-3 rounded-full bg-violet-500 animate-pulse shadow-[0_0_10px_#8b5cf6]" />
-          <h1 className="text-base font-bold text-white tracking-tight">Video Interview</h1>
-          <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-xs text-gray-400 font-semibold cursor-pointer hover:bg-white/10 transition" onClick={copyRoomLink}>
-            Room ID: {room.roomId}
+          <h1 className="text-sm sm:text-base font-bold text-white tracking-tight">Video Interview</h1>
+          <span className="rounded-full bg-white/5 border border-white/10 px-2 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs text-gray-400 font-semibold cursor-pointer hover:bg-white/10 transition" onClick={copyRoomLink}>
+            ID: {room.roomId}
           </span>
         </div>
 
         {/* Center Timer */}
-        <div className="flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-4.5 py-1.5 text-xs font-semibold text-white tracking-wider">
+        <div className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-white/5 border border-white/10 px-3 py-1 sm:px-4.5 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-white tracking-wider">
           <FiClock className="text-violet-400" />
           <span>{formatTime(elapsedSeconds)}</span>
         </div>
@@ -437,7 +437,7 @@ export const VideoInterviewPage = () => {
         <div className="flex items-center gap-3">
           <button 
             onClick={handleLeave} 
-            className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs px-5 py-2 rounded-xl transition shadow-lg shadow-rose-500/10"
+            className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-[10px] sm:text-xs px-4 py-1.5 sm:px-5 sm:py-2 rounded-xl transition shadow-lg shadow-rose-500/10"
           >
             End Call
           </button>
@@ -451,9 +451,9 @@ export const VideoInterviewPage = () => {
       </header>
 
       {/* Main Grid Content */}
-      <div className="flex-1 grid grid-cols-12 gap-4 p-4 min-h-0">
+      <div className="flex-1 grid grid-cols-12 gap-4 p-4 min-h-0 overflow-y-auto">
         {/* Left Column (Video Section) */}
-        <div className={`${isChatOpen ? 'col-span-9' : 'col-span-12'} flex flex-col gap-4 min-h-0`}>
+        <div className={`${isChatOpen ? 'col-span-12 lg:col-span-9' : 'col-span-12'} flex flex-col gap-4 min-h-0`}>
           {/* Video Box Container */}
           <div className="flex-1 relative rounded-2xl overflow-hidden bg-[#0c0a12] border border-white/5 shadow-2xl flex items-center justify-center min-h-0">
             {/* Main Remote View */}
@@ -644,7 +644,7 @@ export const VideoInterviewPage = () => {
 
         {/* Right Column (Redesigned Sidebar panel matching reference image) */}
         {isChatOpen && (
-          <aside className="col-span-3 bg-[#110f1c] border border-white/10 rounded-2xl p-4 flex flex-col justify-between h-full min-h-0 shadow-2xl">
+          <aside className="col-span-12 lg:col-span-3 bg-[#110f1c] border border-white/10 rounded-2xl p-4 flex flex-col justify-between h-full min-h-0 shadow-2xl">
             <div className="flex-1 flex flex-col min-h-0">
               {/* Sidebar Header */}
               <div className="flex justify-between items-center pb-3 border-b border-white/5 mb-4 flex-shrink-0">

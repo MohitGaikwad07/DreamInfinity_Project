@@ -1089,3 +1089,23 @@ button { cursor: pointer; }
     grid-template-columns: 1fr !important;
   }
 }
+
+.post-avatar {
+  flex-shrink: 0 !important;
+}
+
+@media (max-width: 480px) {
+  .post-content header {
+    display: grid !important;
+    grid-template-columns: auto 1fr !important;
+    gap: 0.4rem 0.6rem !important;
+  }
+  
+  .post-content header > div.ml-auto {
+    grid-column: 1 / -1 !important;
+    margin-left: 0 !important;
+    margin-top: 0.25rem !important;
+    justify-content: flex-start !important;
+  }
+}
+
