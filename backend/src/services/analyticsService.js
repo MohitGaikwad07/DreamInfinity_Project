@@ -358,7 +358,8 @@ export const getCodingAnalytics = async (userId, dateFilter) => {
   // Solved Over Time
   const dailySolved = {};
   solvedList.forEach(s => {
-    const day = s.createdAt.toISOString().slice(0, 10);
+    const d = s.createdAt ? new Date(s.createdAt) : new Date();
+    const day = isNaN(d.getTime()) ? new Date().toISOString().slice(0, 10) : d.toISOString().slice(0, 10);
     dailySolved[day] = (dailySolved[day] || 0) + 1;
   });
   const problemsSolvedOverTime = Object.entries(dailySolved).map(([k, v]) => ({ date: k, count: v }));
@@ -402,11 +403,14 @@ export const getResumeAnalytics = async (userId) => {
   const first = resumes[0];
   const improvement = latest.atsScore - first.atsScore;
 
-  const versions = resumes.map((item, idx) => ({
-    versionName: `V.${idx + 1}`,
-    score: item.atsScore,
-    date: item.createdAt.toISOString().slice(0, 10)
-  }));
+  const versions = resumes.map((item, idx) => {
+    const d = item.createdAt ? new Date(item.createdAt) : new Date();
+    return {
+      versionName: `V.${idx + 1}`,
+      score: item.atsScore,
+      date: isNaN(d.getTime()) ? new Date().toISOString().slice(0, 10) : d.toISOString().slice(0, 10)
+    };
+  });
 
   return {
     currentAtsScore: latest.atsScore,
