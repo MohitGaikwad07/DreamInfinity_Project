@@ -272,7 +272,7 @@ export const VideoInterviewPage = () => {
       });
 
       socket.current.on('participant:left', () => {
-        toast.info('The other participant has ended the interview.');
+        toast('The other participant has ended the interview.');
         cleanupMedia();
         dispatch(leaveRoom());
       });
