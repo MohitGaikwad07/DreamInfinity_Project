@@ -2,6 +2,7 @@ import { User } from '../models/User.js';
 import { AppError } from '../utils/AppError.js';
 import { generateToken } from '../utils/generateToken.js';
 import { grantXp, rewards } from '../services/gamificationService.js';
+import axios from 'axios';
 
 const sendAuthResponse = (res, statusCode, user) => {
   const token = generateToken(user.id);
@@ -162,3 +163,115 @@ export const verifyEmail = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const googleLogin = async (req, res, next) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      throw new AppError('Google credential token is required.', 400);
+    }
+
+    let tokenInfo;
+    try {
+      const response = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`);
+      tokenInfo = response.data;
+    } catch (err) {
+      throw new AppError('Invalid Google credential token.', 401);
+    }
+
+    const { sub: googleId, email, name, picture, aud } = tokenInfo;
+    const clientId = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID;
+    if (clientId && aud !== clientId) {
+      throw new AppError('Token was not issued for this application.', 401);
+    }
+
+    if (!email) {
+      throw new AppError('Google account does not provide email access.', 400);
+    }
+
+    let user = await User.findOne({ $or: [{ googleId }, { email }] });
+
+    if (user) {
+      let needsSave = false;
+      if (!user.googleId) {
+        user.googleId = googleId;
+        needsSave = true;
+      }
+      if (!user.isEmailVerified) {
+        user.isEmailVerified = true;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await user.save();
+      }
+    } else {
+      user = await User.create({
+        name,
+        email,
+        googleId,
+        avatar: picture ? { url: picture } : undefined,
+        isEmailVerified: true,
+      });
+      await grantXp(user, rewards.dailyLogin);
+    }
+
+    const alreadyActiveToday = user.lastActivityAt && user.lastActivityAt.toDateString() === new Date().toDateString();
+    if (!alreadyActiveToday) {
+      await grantXp(user, rewards.dailyLogin);
+    }
+
+    return sendAuthResponse(res, 200, user);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const googleMockLogin = async (req, res, next) => {
+  try {
+    if (process.env.NODE_ENV === 'production') {
+      throw new AppError('Mock login only available in development mode.', 403);
+    }
+
+    const { email, name, picture } = req.body;
+    if (!email) {
+      throw new AppError('Email is required for mock Google login.', 400);
+    }
+
+    const mockGoogleId = `mock-google-id-${email}`;
+    let user = await User.findOne({ $or: [{ googleId: mockGoogleId }, { email }] });
+
+    if (user) {
+      let needsSave = false;
+      if (!user.googleId) {
+        user.googleId = mockGoogleId;
+        needsSave = true;
+      }
+      if (!user.isEmailVerified) {
+        user.isEmailVerified = true;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await user.save();
+      }
+    } else {
+      user = await User.create({
+        name: name || 'Mock Google User',
+        email,
+        googleId: mockGoogleId,
+        avatar: picture ? { url: picture } : { url: 'https://lh3.googleusercontent.com/a/default-user' },
+        isEmailVerified: true,
+      });
+      await grantXp(user, rewards.dailyLogin);
+    }
+
+    const alreadyActiveToday = user.lastActivityAt && user.lastActivityAt.toDateString() === new Date().toDateString();
+    if (!alreadyActiveToday) {
+      await grantXp(user, rewards.dailyLogin);
+    }
+
+    return sendAuthResponse(res, 200, user);
+  } catch (error) {
+    return next(error);
+  }
+};
+

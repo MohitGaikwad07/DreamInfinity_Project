@@ -16,6 +16,11 @@ const slugToTitle = (slug) => slug.split('-').map(w => w.charAt(0).toUpperCase()
  * Calculates a dynamic, live company readiness percentage.
  */
 const calculateLiveCompanyReadiness = (companyName, userStats) => {
+  const hasActivity = userStats.latestResumeScore > 0 || userStats.problemsSolved > 0 || userStats.interviewCount > 0 || userStats.skillsCount > 0;
+  if (!hasActivity) {
+    return 0;
+  }
+
   const ats = userStats.latestResumeScore || 42;
   const coding = Math.min(100, Math.max(30, 30 + userStats.problemsSolved * 5));
   const interview = Math.min(100, Math.max(35, 35 + userStats.interviewCount * 8 + userStats.avgInterviewScore * 0.25));
@@ -163,12 +168,12 @@ export const aggregateProfileActivity = async (userId) => {
 
   // 7. Dynamic AI Skill Scores calculation
   const calculatedSkillScores = {
-    programming: codingScore || Math.min(95, Math.max(20, 45 + problemsSolved * 3)),
-    frontend: profile?.skills?.frameworks?.some(s => ['react', 'vue', 'angular', 'nextjs'].includes(s.name.toLowerCase())) ? 75 : 50,
-    backend: profile?.skills?.frameworks?.some(s => ['nodejs', 'express', 'django', 'spring'].includes(s.name.toLowerCase())) ? 80 : 55,
-    database: profile?.skills?.databases?.length ? Math.min(95, 60 + profile.skills.databases.length * 8) : 45,
-    communication: avgCommunicationScore || 70,
-    problemSolving: avgProblemSolvingScore || Math.min(95, Math.max(30, 50 + problemsSolved * 2.5)),
+    programming: submissions.length > 0 ? (codingScore || Math.min(95, Math.max(20, 45 + problemsSolved * 3))) : 0,
+    frontend: profile?.skills?.frameworks?.some(s => ['react', 'vue', 'angular', 'nextjs'].includes(s.name.toLowerCase())) ? 75 : (skillsCount > 0 ? 50 : 0),
+    backend: profile?.skills?.frameworks?.some(s => ['nodejs', 'express', 'django', 'spring'].includes(s.name.toLowerCase())) ? 80 : (skillsCount > 0 ? 55 : 0),
+    database: profile?.skills?.databases?.length ? Math.min(95, 60 + profile.skills.databases.length * 8) : (skillsCount > 0 ? 45 : 0),
+    communication: completedInterviews.length > 0 ? (avgCommunicationScore || 70) : 0,
+    problemSolving: (submissions.length > 0 || completedInterviews.length > 0) ? (avgProblemSolvingScore || Math.min(95, Math.max(30, 50 + problemsSolved * 2.5))) : 0,
   };
   
   calculatedSkillScores.overall = Math.round(

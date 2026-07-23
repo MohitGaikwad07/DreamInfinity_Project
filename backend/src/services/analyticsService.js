@@ -69,17 +69,17 @@ export const getOrCreateSnapshot = async (userId) => {
     CommunityPost.countDocuments({ author: userId })
   ]);
 
-  const resume = user.resumeScore || 45;
+  const resume = user.resumeScore || 0;
   const codingScore = Math.min(100, coding * 12);
-  const interviewScore = Math.min(100, interviews * 18 + 35);
+  const interviewScore = interviews > 0 ? Math.min(100, interviews * 18 + 35) : 0;
   const skillScore = Math.min(100, Math.round(user.xp / 18));
-  const communicationScore = Math.min(100, interviews * 18 + 35);
+  const communicationScore = interviews > 0 ? Math.min(100, interviews * 18 + 35) : 0;
 
   const overall = Math.min(100, Math.round(
     resume * 0.25 +
     codingScore * 0.25 +
     interviewScore * 0.20 +
-    Math.min(100, community * 15 + 30) * 0.1 +
+    (community > 0 ? Math.min(100, community * 15 + 30) : 0) * 0.1 +
     Math.min(100, user.xp / 20) * 0.2
   ));
 
@@ -121,17 +121,17 @@ export const getOverviewAnalytics = async (userId, dateFilter) => {
     CommunityPost.countDocuments({ author: userId })
   ]);
 
-  const resumeScore = user.resumeScore || 45;
+  const resumeScore = user.resumeScore || 0;
   const codingScore = Math.min(100, codingCount * 12);
-  const interviewScore = Math.min(100, interviewCount * 18 + 35);
-  const communicationScore = Math.min(100, interviewCount * 18 + 35);
-  const technicalScore = Math.min(100, interviewCount * 14 + 40);
+  const interviewScore = interviewCount > 0 ? Math.min(100, interviewCount * 18 + 35) : 0;
+  const communicationScore = interviewCount > 0 ? Math.min(100, interviewCount * 18 + 35) : 0;
+  const technicalScore = interviewCount > 0 ? Math.min(100, interviewCount * 14 + 40) : 0;
 
   const overall = Math.min(100, Math.round(
     resumeScore * 0.25 +
     codingScore * 0.25 +
     interviewScore * 0.20 +
-    Math.min(100, communityCount * 15 + 30) * 0.1 +
+    (communityCount > 0 ? Math.min(100, communityCount * 15 + 30) : 0) * 0.1 +
     Math.min(100, user.xp / 20) * 0.2
   ));
 

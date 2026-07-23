@@ -12,6 +12,19 @@ export const loginUser = createAsyncThunk('auth/login', async (payload, { reject
   try { return await authService.login(payload); } catch (error) { return rejectWithValue(getErrorMessage(error)); }
 });
 
+export const loginWithGoogle = createAsyncThunk('auth/googleLogin', async ({ credential, mock }, { rejectWithValue }) => {
+  try {
+    if (mock) {
+      return await authService.googleMockLogin(mock);
+    } else {
+      return await authService.googleLogin({ credential });
+    }
+  } catch (error) {
+    return rejectWithValue(getErrorMessage(error));
+  }
+});
+
+
 export const loadCurrentUser = createAsyncThunk('auth/loadCurrentUser', async (_, { rejectWithValue }) => {
   try { return await authService.getCurrentUser(); } catch (error) { return rejectWithValue(getErrorMessage(error)); }
 });
@@ -49,6 +62,8 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, fulfilledAuth)
       .addCase(loginUser.pending, (state) => { state.loading = true; state.error = null; })
       .addCase(loginUser.fulfilled, fulfilledAuth)
+      .addCase(loginWithGoogle.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(loginWithGoogle.fulfilled, fulfilledAuth)
       .addCase(loadCurrentUser.pending, (state) => { state.loading = true; })
       .addCase(loadCurrentUser.fulfilled, (state, action) => { state.loading = false; state.initialized = true; state.user = action.payload.user; state.isAuthenticated = true; })
       .addCase(loadCurrentUser.rejected, (state, action) => { state.loading = false; state.initialized = true; state.user = null; state.token = null; state.isAuthenticated = false; state.error = action.payload; clearStoredToken(); })

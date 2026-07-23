@@ -97,6 +97,130 @@ public:
     // Write your code here
     return 0
 }`
+  },
+  'reverse-string': {
+    javascript: `/**
+ * @param {character[]} s
+ * @return {void} Do not return anything, modify s in-place instead.
+ */
+function reverseString(s) {
+    // Write your code here
+    
+}`,
+    python: `class Solution:
+    def reverseString(self, s: list[str]) -> None:
+        # Write your code here
+        pass`,
+    java: `class Solution {
+    public void reverseString(char[] s) {
+        // Write your code here
+        
+    }
+}`,
+    cpp: `class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        // Write your code here
+        
+    }
+};`,
+    go: `func reverseString(s []byte)  {
+    // Write your code here
+    
+}`
+  },
+  'lru-cache': {
+    javascript: `class LRUCache {
+    /**
+     * @param {number} capacity
+     */
+    constructor(capacity) {
+        // Write your code here
+        
+    }
+
+    /**
+     * @param {number} key
+     * @return {number}
+     */
+    get(key) {
+        // Write your code here
+        return -1;
+    }
+
+    /**
+     * @param {number} key
+     * @param {number} value
+     * @return {void}
+     */
+    put(key, value) {
+        // Write your code here
+        
+    }
+}`,
+    python: `class LRUCache:
+    def __init__(self, capacity: int):
+        # Write your code here
+        pass
+
+    def get(self, key: int) -> int:
+        # Write your code here
+        return -1
+
+    def put(self, key: int, value: int) -> None:
+        # Write your code here
+        pass`,
+    java: `class LRUCache {
+    public LRUCache(int capacity) {
+        // Write your code here
+        
+    }
+    
+    public int get(int key) {
+        // Write your code here
+        return -1;
+    }
+    
+    public void put(int key, int value) {
+        // Write your code here
+        
+    }
+}`,
+    cpp: `class LRUCache {
+public:
+    LRUCache(int capacity) {
+        // Write your code here
+        
+    }
+    
+    int get(int key) {
+        // Write your code here
+        return -1;
+    }
+    
+    void put(int key, int value) {
+        // Write your code here
+        
+    }
+};`,
+    go: `type LRUCache struct {
+    // Write fields here
+}
+
+func Constructor(capacity int) LRUCache {
+    // Write your code here
+    return LRUCache{}
+}
+
+func (this *LRUCache) Get(key int) int {
+    // Write your code here
+    return -1
+}
+
+func (this *LRUCache) Put(key int, value int)  {
+    // Write your code here
+    
+}`
   }
 };
 

@@ -9,7 +9,9 @@ import {
   forgotPassword,
   resetPassword,
   verifyEmail,
-  sendVerificationEmail
+  sendVerificationEmail,
+  googleLogin,
+  googleMockLogin
 } from '../controllers/authController.js';
 import { requireAuth } from '../middleware/authMiddleware.js';
 import {
@@ -31,3 +33,5 @@ authRouter.post('/forgot-password', forgotPassword);
 authRouter.post('/reset-password', resetPassword);
 authRouter.post('/verify-email', requireAuth, verifyEmail);
 authRouter.post('/send-verification', requireAuth, sendVerificationEmail);
+authRouter.post('/google', googleLogin);
+authRouter.post('/google-mock', googleMockLogin);

@@ -69,10 +69,6 @@ export const CareerScore = ({ scores }) => {
           <h2 className="text-base font-bold text-violet-100">AI Skill Metrics</h2>
           <p className="text-xs text-violet-100/50 mt-0.5">Calculated by platform engagement, coding submissions, and mock transcripts.</p>
         </div>
-        <div className="text-right">
-          <span className="text-[10px] uppercase font-bold text-violet-300 tracking-wider">Overall Ranking</span>
-          <p className="text-xl font-extrabold text-white mt-0.5">{normalizedScores.overall >= 80 ? 'Elite' : normalizedScores.overall >= 60 ? 'Competitive' : 'Rising Talent'}</p>
-        </div>
       </div>
 
       <div className="score-charts-grid">

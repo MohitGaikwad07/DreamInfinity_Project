@@ -16,7 +16,7 @@ export const LoginForm = () => {
   useEffect(() => { if (error) { toast.error(error); dispatch(clearAuthError()); } }, [error, dispatch]);
   const submit = async (values) => {
     const action = await dispatch(loginUser(values));
-    if (loginUser.fulfilled.match(action)) { toast.success('Welcome back.'); navigate('/dashboard', { replace: true }); }
+    if (loginUser.fulfilled.match(action)) { navigate('/dashboard', { replace: true }); }
   };
   return <form onSubmit={handleSubmit(submit)} className="space-y-5">
     <label className="block space-y-1.5"><span className="text-sm font-medium text-violet-100">Email address</span><input className={`field ${errors.email ? 'field-error' : ''}`} autoComplete="email" {...register('email', { required: 'Email is required.', pattern: { value: /^\S+@\S+\.\S+$/, message: 'Enter a valid email address.' } })} />{errors.email && <span className="text-sm text-rose-300">{errors.email.message}</span>}</label>

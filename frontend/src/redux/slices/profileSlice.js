@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { profileService } from '../../services/profileService.js';
+import { logoutUser } from './authSlice.js';
 
 const getErrorMessage = (error) => error?.errors?.[0]?.msg || error?.message || 'Something went wrong.';
 
@@ -83,6 +84,10 @@ const profileSlice = createSlice({
         state.activity = action.payload.activity;
       })
       .addCase(updateProfileDetails.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.profile = null;
+        state.activity = null;
+      })
 
       // Project Thunks
       .addCase(createUserProject.fulfilled, (state, action) => {

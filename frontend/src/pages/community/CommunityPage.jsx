@@ -48,6 +48,7 @@ export const CommunityPage = () => {
   const [modal, setModal] = useState(false);
   const [editModal, setEditModal] = useState(null); // Post object to edit
   const [selectedPost, setSelectedPost] = useState(null); // Post details / comments sidebar
+  const [expandedPosts, setExpandedPosts] = useState({});
   
   const [query, setQuery] = useState('');
   
@@ -290,7 +291,15 @@ export const CommunityPage = () => {
                     >
                       {post.title}
                     </h2>
-                    <p>{post.content}</p>
+                    <p className={expandedPosts[post._id] ? 'expanded' : ''}>{post.content}</p>
+                    {post.content && post.content.length > 200 && (
+                      <button 
+                        onClick={() => setExpandedPosts(prev => ({ ...prev, [post._id]: !prev[post._id] }))}
+                        className="text-xs text-violet-400 hover:text-violet-300 font-semibold mt-1 transition cursor-pointer"
+                      >
+                        {expandedPosts[post._id] ? 'Show less' : 'Read more'}
+                      </button>
+                    )}
                     
                     <div className="tag-row">
                       {post.tags?.map((tag) => (

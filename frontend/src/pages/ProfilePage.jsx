@@ -88,7 +88,7 @@ export const ProfilePage = () => {
     <div className="space-y-6">
       {/* Title section */}
       <div>
-        <p className="dash-kicker">MODULE 14</p>
+        {/* <p className="dash-kicker">MODULE 14</p> */}
         <h1 className="text-2xl md:text-3xl font-extrabold text-violet-100 tracking-tight flex items-center gap-2">
           Career Dashboard <span className="text-violet-400">&</span> Portfolio
         </h1>

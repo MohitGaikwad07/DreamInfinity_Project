@@ -356,3 +356,218 @@
 .ai-review-notes li:last-child {
   margin-bottom: 0;
 }
+
+/* Light theme overrides for coding platform */
+.light-theme .workspace-panel {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.light-theme .workspace-panel.editor-panel {
+  border-color: rgba(124, 58, 237, 0.15);
+}
+
+.light-theme .panel-header-bar {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  background: rgba(248, 250, 252, 0.95);
+}
+
+.light-theme .panel-header-bar b {
+  color: #0f172a !important;
+}
+
+.light-theme .problem-select {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #0f172a;
+}
+
+.light-theme .problem-select option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.light-theme .difficulty-badge.easy {
+  background: rgba(16, 185, 129, 0.08);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.light-theme .difficulty-badge.medium {
+  background: rgba(245, 158, 11, 0.08);
+  color: #d97706;
+  border-color: rgba(245, 158, 11, 0.15);
+}
+
+.light-theme .difficulty-badge.hard {
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+.light-theme .workspace-tabs {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .workspace-tab {
+  color: #64748b;
+}
+
+.light-theme .workspace-tab:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.light-theme .workspace-tab.tab-active {
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.08);
+}
+
+.light-theme .pane-content h3 {
+  color: #0f172a;
+}
+
+.light-theme .pane-content p {
+  color: #334155;
+}
+
+.light-theme .pane-content .text-violet-300 {
+  color: #7c3aed !important;
+}
+
+.light-theme .pane-content .text-violet-400 {
+  color: #6d28d9 !important;
+}
+
+.light-theme .pane-content pre {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.06);
+  color: #0d9488;
+}
+
+.light-theme .pane-content details {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .pane-content details .text-slate-300 {
+  color: #475569 !important;
+}
+
+.light-theme .pane-content .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+  color: #64748b !important;
+}
+
+.light-theme .pane-content .bg-violet-500\/10 {
+  background-color: rgba(124, 58, 237, 0.06) !important;
+  border-color: rgba(124, 58, 237, 0.1) !important;
+  color: #7c3aed !important;
+}
+
+.light-theme .submission-row {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.light-theme .submission-meta b {
+  color: #0f172a;
+}
+
+.light-theme .submission-meta span {
+  color: #64748b;
+}
+
+.light-theme .submission-score {
+  background: rgba(124, 58, 237, 0.08);
+  color: #7c3aed;
+}
+
+.light-theme .rank-row {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.light-theme .rank-row span {
+  color: #64748b;
+}
+
+.light-theme .rank-row b {
+  color: #0f172a;
+}
+
+.light-theme .rank-row strong {
+  color: #7c3aed;
+}
+
+.light-theme .console-wrapper {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: #f8fafc;
+}
+
+.light-theme .console-header {
+  color: #64748b;
+}
+
+.light-theme .console-result.status-accepted {
+  background: #ecfdf5;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #047857;
+}
+
+.light-theme .console-result.status-error {
+  background: #fef2f2;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #b91c1c;
+}
+
+.light-theme .console-result.status-compilation {
+  background: #fffbeb;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  color: #b45309;
+}
+
+.light-theme .ai-review-header h4 {
+  color: #7c3aed;
+}
+
+.light-theme .ai-review-header p {
+  color: #64748b;
+}
+
+.light-theme .ai-review-metric {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.light-theme .ai-review-metric small {
+  color: #64748b;
+}
+
+.light-theme .ai-review-metric b {
+  color: #0f172a;
+}
+
+.light-theme .ai-review-notes section {
+  background: rgba(124, 58, 237, 0.03);
+  border-color: rgba(124, 58, 237, 0.1);
+}
+
+.light-theme .ai-review-notes h5 {
+  color: #7c3aed;
+}
+
+.light-theme .ai-review-notes ul {
+  color: #334155;
+}
+
+.light-theme .workspace-panel textarea {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.light-theme .workspace-panel textarea::placeholder {
+  color: #94a3b8 !important;
+}

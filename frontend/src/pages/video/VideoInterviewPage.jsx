@@ -6,14 +6,20 @@ import toast from 'react-hot-toast';
 import { 
   FiCamera, 
   FiCameraOff, 
-  FiCopy, 
   FiMic, 
   FiMicOff, 
   FiMonitor, 
-  FiPhoneOff, 
   FiPlus, 
   FiSend, 
-  FiVideo 
+  FiVideo,
+  FiX,
+  FiMoreHorizontal,
+  FiCode,
+  FiUsers,
+  FiMaximize2,
+  FiMinimize2,
+  FiClock,
+  FiMessageSquare
 } from 'react-icons/fi';
 import { 
   addMessage, 
@@ -30,19 +36,79 @@ export const VideoInterviewPage = () => {
   const dispatch = useDispatch();
   const state = useSelector((store) => store.videoInterview);
   const { room, mic, camera, screenShare, messages, notes, code, loading } = state;
+  const user = useSelector((store) => store.auth.user);
   
   const [roomId, setRoomId] = useState('');
   const [message, setMessage] = useState('');
-  const [panel, setPanel] = useState('chat');
+  const [panel, setPanel] = useState('chat'); // 'chat', 'notes', or ''
+  const [showEditor, setShowEditor] = useState(false);
   const [peerStream, setPeerStream] = useState(null);
   const [participantName, setParticipantName] = useState('');
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   
   const [searchParams] = useSearchParams();
+
   const video = useRef();
   const peerVideo = useRef();
   const stream = useRef();
   const socket = useRef();
   const peerConnectionRef = useRef();
+
+  const containerRef = useRef();
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = async () => {
+    if (!containerRef.current) return;
+    try {
+      if (!document.fullscreenElement) {
+        await containerRef.current.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.error('Error toggling fullscreen:', err);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  // Hoisted cleanupMedia function
+  function cleanupMedia() {
+    if (stream.current) {
+      stream.current.getTracks().forEach((track) => track.stop());
+      stream.current = null;
+    }
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.close();
+      peerConnectionRef.current = null;
+    }
+    if (socket.current) {
+      socket.current.disconnect();
+      socket.current = null;
+    }
+    setPeerStream(null);
+    setParticipantName('');
+    setElapsedSeconds(0);
+  }
+
+  // Active call timer
+  useEffect(() => {
+    if (!room) return;
+    const interval = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [room]);
 
   // Read ?room=ID query parameter on load
   useEffect(() => {
@@ -72,23 +138,6 @@ export const VideoInterviewPage = () => {
       cleanupMedia();
     };
   }, []);
-
-  const cleanupMedia = () => {
-    if (stream.current) {
-      stream.current.getTracks().forEach((track) => track.stop());
-      stream.current = null;
-    }
-    if (peerConnectionRef.current) {
-      peerConnectionRef.current.close();
-      peerConnectionRef.current = null;
-    }
-    if (socket.current) {
-      socket.current.disconnect();
-      socket.current = null;
-    }
-    setPeerStream(null);
-    setParticipantName('');
-  };
 
   const createPeerConnection = (activeRoomId) => {
     const pc = new RTCPeerConnection({
@@ -176,7 +225,7 @@ export const VideoInterviewPage = () => {
         });
       });
 
-      socket.current.on('signal', async ({ from, signal }) => {
+      socket.current.on('signal', async ({ signal }) => {
         let pc = peerConnectionRef.current;
         
         if (signal.type === 'offer') {
@@ -223,13 +272,9 @@ export const VideoInterviewPage = () => {
       });
 
       socket.current.on('participant:left', () => {
-        toast.info('Participant left the room.');
-        setPeerStream(null);
-        setParticipantName('');
-        if (peerConnectionRef.current) {
-          peerConnectionRef.current.close();
-          peerConnectionRef.current = null;
-        }
+        toast.info('The other participant has ended the interview.');
+        cleanupMedia();
+        dispatch(leaveRoom());
       });
 
     } catch (err) {
@@ -242,7 +287,6 @@ export const VideoInterviewPage = () => {
     if (!message.trim() || !socket.current) return;
     const item = { text: message, createdAt: new Date().toISOString() };
     socket.current.emit('chat:message', { roomId: room.roomId, message: item });
-    dispatch(addMessage({ ...item, sender: 'You' }));
     setMessage('');
   };
 
@@ -264,7 +308,6 @@ export const VideoInterviewPage = () => {
 
   const share = async () => {
     if (screenShare) {
-      // Revert to camera stream
       cleanupScreenShare();
       return;
     }
@@ -320,6 +363,20 @@ export const VideoInterviewPage = () => {
       .then(() => toast.success('Invite link copied to clipboard!'));
   };
 
+  // Helper formatting functions
+  const formatTime = (secs) => {
+    const h = Math.floor(secs / 3600).toString().padStart(2, '0');
+    const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
+    const s = (secs % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  };
+
+  const formatMessageTime = (isoString) => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   if (!room) {
     return (
       <div className="mx-auto max-w-2xl space-y-5 py-12">
@@ -357,206 +414,353 @@ export const VideoInterviewPage = () => {
     );
   }
 
+  const isChatOpen = panel === 'chat' || panel === 'notes';
+
   return (
-    <div className="space-y-4">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="dash-kicker">LIVE TECHNICAL INTERVIEW</p>
-          <h1 className="text-xl font-bold text-white">Room: {room.roomId}</h1>
+    <div ref={containerRef} className={`flex flex-col bg-[#08070e] text-white ${isFullscreen ? 'h-screen w-screen p-4' : 'h-[calc(100vh-90px)]'}`}>
+      {/* Redesigned Header */}
+      <header className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#110f1c] flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="h-3 w-3 rounded-full bg-violet-500 animate-pulse shadow-[0_0_10px_#8b5cf6]" />
+          <h1 className="text-base font-bold text-white tracking-tight">Video Interview</h1>
+          <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-xs text-gray-400 font-semibold cursor-pointer hover:bg-white/10 transition" onClick={copyRoomLink}>
+            Room ID: {room.roomId}
+          </span>
         </div>
-        <div className="flex gap-2">
-          <button className="subtle-button" onClick={copyRoomLink}>
-            <FiCopy /> Copy Invite Link
+
+        {/* Center Timer */}
+        <div className="flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-4.5 py-1.5 text-xs font-semibold text-white tracking-wider">
+          <FiClock className="text-violet-400" />
+          <span>{formatTime(elapsedSeconds)}</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleLeave} 
+            className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs px-5 py-2 rounded-xl transition shadow-lg shadow-rose-500/10"
+          >
+            End Call
+          </button>
+          <button 
+            onClick={handleLeave} 
+            className="text-gray-400 hover:text-white p-1 hover:bg-white/5 rounded-lg transition"
+          >
+            <FiX size={18} />
           </button>
         </div>
       </header>
 
-      <div className="grid gap-4 xl:grid-cols-[1.5fr_.7fr]">
-        <section className="space-y-4">
-          {/* Videos Grid */}
-          <div className="grid gap-3 md:grid-cols-2">
-            {/* Local Video */}
-            <div className="relative min-h-64 overflow-hidden rounded-xl bg-black border border-white/5">
+      {/* Main Grid Content */}
+      <div className="flex-1 grid grid-cols-12 gap-4 p-4 min-h-0">
+        {/* Left Column (Video Section) */}
+        <div className={`${isChatOpen ? 'col-span-9' : 'col-span-12'} flex flex-col gap-4 min-h-0`}>
+          {/* Video Box Container */}
+          <div className="flex-1 relative rounded-2xl overflow-hidden bg-[#0c0a12] border border-white/5 shadow-2xl flex items-center justify-center min-h-0">
+            {/* Main Remote View */}
+            {peerStream ? (
+              <video 
+                ref={peerVideo} 
+                autoPlay 
+                playsInline 
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="text-center space-y-4 animate-pulse">
+                <div className="h-16 w-16 mx-auto rounded-full bg-violet-600/10 border border-violet-500/25 flex items-center justify-center text-violet-400">
+                  <FiVideo size={28} />
+                </div>
+                <div className="text-xs text-gray-500 font-semibold tracking-wider uppercase">
+                  Waiting for participant to join...
+                </div>
+              </div>
+            )}
+
+            {/* PIP Local Video (Floats in top right) */}
+            <div className="absolute top-4 right-4 w-44 aspect-video rounded-xl overflow-hidden border border-white/20 shadow-2xl z-20 bg-[#161426] flex items-center justify-center">
               <video 
                 ref={video} 
                 autoPlay 
                 muted 
                 playsInline 
-                className="h-full w-full object-cover"
+                className={`h-full w-full object-cover ${camera ? 'block' : 'hidden'}`}
               />
-              <span className="absolute bottom-3 left-3 rounded bg-black/60 px-2.5 py-1 text-xs text-white">
-                You {camera ? '' : '(Camera Off)'}
+              {!camera && (
+                <div className="h-8 w-8 rounded-full bg-violet-600 text-white font-bold flex items-center justify-center text-xs">
+                  Y
+                </div>
+              )}
+              <span className="absolute bottom-2 left-2 rounded bg-black/60 px-1.5 py-0.5 text-[9px] text-white">
+                You
               </span>
             </div>
 
-            {/* Remote Video / Placeholder */}
-            {peerStream ? (
-              <div className="relative min-h-64 overflow-hidden rounded-xl bg-black border border-white/5">
-                <video 
-                  ref={peerVideo} 
-                  autoPlay 
-                  playsInline 
-                  className="h-full w-full object-cover"
+            {/* Fullscreen Toggle Button (Floats in top left) */}
+            <button 
+              onClick={toggleFullscreen}
+              className="absolute top-4 left-4 h-9 w-9 rounded-xl bg-black/40 hover:bg-black/60 border border-white/10 text-white flex items-center justify-center transition cursor-pointer z-20"
+            >
+              {isFullscreen ? <FiMinimize2 size={15} /> : <FiMaximize2 size={15} />}
+            </button>
+
+            {/* Bottom Overlay Controls Panel */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#161426]/95 border border-white/10 px-6 py-3 rounded-2xl flex items-center gap-6 backdrop-blur shadow-2xl z-30">
+              {/* Mic Control */}
+              <button 
+                onClick={toggleMic}
+                className="flex flex-col items-center gap-1.5 text-gray-400 hover:text-white transition cursor-pointer"
+              >
+                {mic ? (
+                  <FiMic size={18} className="text-white bg-white/5 h-10 w-10 p-2.5 rounded-full border border-white/10 hover:bg-white/10 transition" />
+                ) : (
+                  <FiMicOff size={18} className="text-rose-400 bg-rose-500/10 h-10 w-10 p-2.5 rounded-full border border-rose-500/20" />
+                )}
+                <span className="text-[10px] font-medium tracking-wide">Mic</span>
+              </button>
+
+              {/* Camera Control */}
+              <button 
+                onClick={toggleCamera}
+                className="flex flex-col items-center gap-1.5 text-gray-400 hover:text-white transition cursor-pointer"
+              >
+                {camera ? (
+                  <FiCamera size={18} className="text-white bg-white/5 h-10 w-10 p-2.5 rounded-full border border-white/10 hover:bg-white/10 transition" />
+                ) : (
+                  <FiCameraOff size={18} className="text-rose-400 bg-rose-500/10 h-10 w-10 p-2.5 rounded-full border border-rose-500/20" />
+                )}
+                <span className="text-[10px] font-medium tracking-wide">Camera</span>
+              </button>
+
+              {/* Screen Control */}
+              <button 
+                onClick={share}
+                className="flex flex-col items-center gap-1.5 text-gray-400 hover:text-white transition cursor-pointer"
+              >
+                <FiMonitor 
+                  size={18} 
+                  className={`h-10 w-10 p-2.5 rounded-full border transition ${
+                    screenShare 
+                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' 
+                      : 'text-white bg-white/5 border-white/10 hover:bg-white/10'
+                  }`} 
                 />
-                <span className="absolute bottom-3 left-3 rounded bg-black/60 px-2.5 py-1 text-xs text-white">
-                  {participantName || 'Interviewer'}
-                </span>
+                <span className="text-[10px] font-medium tracking-wide">Screen</span>
+              </button>
+
+              {/* Chat Toggle Control */}
+              <button 
+                onClick={() => setPanel(panel === 'chat' ? '' : 'chat')}
+                className="flex flex-col items-center gap-1.5 text-gray-400 hover:text-white transition cursor-pointer"
+              >
+                <FiMessageSquare 
+                  size={18} 
+                  className={`h-10 w-10 p-2.5 rounded-full border transition ${
+                    panel === 'chat' 
+                      ? 'text-violet-400 bg-violet-500/10 border-violet-500/20' 
+                      : 'text-white bg-white/5 border-white/10 hover:bg-white/10'
+                  }`} 
+                />
+                <span className="text-[10px] font-medium tracking-wide">Chat</span>
+              </button>
+
+              {/* Editor Toggle Control */}
+              <button 
+                onClick={() => setShowEditor(!showEditor)}
+                className="flex flex-col items-center gap-1.5 text-gray-400 hover:text-white transition cursor-pointer"
+              >
+                <FiCode 
+                  size={18} 
+                  className={`h-10 w-10 p-2.5 rounded-full border transition ${
+                    showEditor 
+                      ? 'text-violet-400 bg-violet-500/10 border-violet-500/20' 
+                      : 'text-white bg-white/5 border-white/10 hover:bg-white/10'
+                  }`} 
+                />
+                <span className="text-[10px] font-medium tracking-wide">Editor</span>
+              </button>
+
+              {/* Participants Indicator */}
+              <button 
+                onClick={() => toast('Participants list: You, ' + (participantName || 'Waiting...'))}
+                className="flex flex-col items-center gap-1.5 text-gray-400 hover:text-white transition cursor-pointer"
+              >
+                <FiUsers size={18} className="text-white bg-white/5 h-10 w-10 p-2.5 rounded-full border border-white/10 hover:bg-white/10 transition" />
+                <span className="text-[10px] font-medium tracking-wide">People</span>
+              </button>
+
+              {/* More Options */}
+              <button 
+                onClick={() => setPanel(panel === 'notes' ? '' : 'notes')}
+                className="flex flex-col items-center gap-1.5 text-gray-400 hover:text-white transition cursor-pointer"
+              >
+                <FiMoreHorizontal 
+                  size={18} 
+                  className={`h-10 w-10 p-2.5 rounded-full border transition ${
+                    panel === 'notes' 
+                      ? 'text-violet-400 bg-violet-500/10 border-violet-500/20' 
+                      : 'text-white bg-white/5 border-white/10 hover:bg-white/10'
+                  }`} 
+                />
+                <span className="text-[10px] font-medium tracking-wide">Notes</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Toggleable Realtime Coding Workspace */}
+          {showEditor && (
+            <div className="h-[260px] border border-white/5 rounded-2xl overflow-hidden bg-[#110f1c] flex flex-col flex-shrink-0">
+              <div className="bg-black/30 border-b border-white/5 px-4 py-2 flex justify-between items-center">
+                <b className="text-[10px] font-bold text-white tracking-widest uppercase">Collaborative Editor</b>
+                <span className="text-[8px] bg-violet-500/10 border border-violet-500/20 text-violet-300 font-bold px-2 py-0.5 rounded uppercase">Synced</span>
               </div>
-            ) : (
-              <div className="grid min-h-64 place-items-center rounded-xl bg-slate-900/60 border border-dashed border-white/10 text-slate-400">
-                <div className="text-center">
-                  <FiVideo size={38} className="mx-auto mb-2 text-violet-400" />
-                  <span className="text-sm">Waiting for participant to join...</span>
+              <div className="flex-1 min-h-0">
+                <Editor 
+                  height="100%" 
+                  language="javascript" 
+                  theme="vs-dark" 
+                  value={code} 
+                  onChange={(value) => { 
+                    dispatch(setCode(value || '')); 
+                    if (socket.current) {
+                      socket.current.emit('code:update', { 
+                        roomId: room.roomId, 
+                        code: value || '', 
+                        language: 'javascript' 
+                      }); 
+                    }
+                  }} 
+                  options={{ 
+                    minimap: { enabled: false }, 
+                    automaticLayout: true,
+                    fontSize: 12,
+                    wordWrap: 'on',
+                    lineNumbers: 'on',
+                    padding: { top: 8, bottom: 8 }
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right Column (Redesigned Sidebar panel matching reference image) */}
+        {isChatOpen && (
+          <aside className="col-span-3 bg-[#110f1c] border border-white/10 rounded-2xl p-4 flex flex-col justify-between h-full min-h-0 shadow-2xl">
+            <div className="flex-1 flex flex-col min-h-0">
+              {/* Sidebar Header */}
+              <div className="flex justify-between items-center pb-3 border-b border-white/5 mb-4 flex-shrink-0">
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setPanel('chat')}
+                    className={`text-xs font-bold px-2.5 py-1 rounded transition ${
+                      panel === 'chat' ? 'bg-violet-500/10 text-violet-300' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Chat
+                  </button>
+                  <button 
+                    onClick={() => setPanel('notes')}
+                    className={`text-xs font-bold px-2.5 py-1 rounded transition ${
+                      panel === 'notes' ? 'bg-violet-500/10 text-violet-300' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Notepad
+                  </button>
+                </div>
+                <button 
+                  onClick={() => setPanel('')} 
+                  className="text-gray-400 hover:text-white transition p-0.5 hover:bg-white/5 rounded"
+                >
+                  <FiX size={15} />
+                </button>
+              </div>
+
+              {/* Sidebar Content (Chat message thread or Notepad) */}
+              <div className="flex-1 overflow-y-auto pr-1 min-h-0">
+                {panel === 'chat' ? (
+                  <div className="space-y-4">
+                    {messages.length ? (
+                      messages.map((item, index) => {
+                        const isOwn = item.sender === 'You' || (user && item.sender === user.name);
+                        return (
+                          <div key={index} className="flex gap-2.5 items-start">
+                            {/* Avatar */}
+                            <div className={`h-6 w-6 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold border ${
+                              isOwn 
+                                ? 'bg-violet-500/20 text-violet-300 border-violet-500/30' 
+                                : 'bg-slate-700/30 text-gray-300 border-slate-700/50'
+                            }`}>
+                              {isOwn ? 'Y' : (item.sender?.[0]?.toUpperCase() || 'P')}
+                            </div>
+
+                            {/* Message Block */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="text-[10px] font-bold text-white truncate max-w-[100px]">
+                                  {isOwn ? 'You' : (item.sender || 'Participant')}
+                                </span>
+                                <span className="text-[8px] text-gray-500">
+                                  {formatMessageTime(item.createdAt)}
+                                </span>
+                              </div>
+                              {/* Message bubble */}
+                              <div className={`mt-1 rounded-2xl rounded-tl-none px-3.5 py-2 text-xs leading-relaxed tracking-wide ${
+                                isOwn 
+                                  ? 'bg-violet-600/10 border border-violet-500/20 text-violet-200' 
+                                  : 'bg-white/5 border border-white/5 text-gray-200'
+                              }`}>
+                                {item.text}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-8 text-gray-500 text-xs font-medium">
+                        No messages yet. Send a greeting to start.
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <textarea 
+                    value={notes} 
+                    onChange={(event) => { 
+                      dispatch(setNotes(event.target.value)); 
+                      if (socket.current) {
+                        socket.current.emit('notes:update', { 
+                          roomId: room.roomId, 
+                          notes: event.target.value 
+                        }); 
+                      }
+                    }} 
+                    className="h-full w-full bg-black/30 border border-white/5 rounded-xl p-3 text-xs text-white outline-none focus:border-violet-500 transition resize-none" 
+                    placeholder="Realtime shared notepad..."
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Sidebar Footer Input (for Chat) */}
+            {panel === 'chat' && (
+              <div className="border-t border-white/5 pt-3 mt-3 flex-shrink-0">
+                <div className="relative flex items-center">
+                  <input 
+                    value={message} 
+                    onChange={(event) => setMessage(event.target.value)} 
+                    onKeyDown={(event) => event.key === 'Enter' && send()} 
+                    className="w-full rounded-2xl bg-black/40 border border-white/10 px-4 py-3 pr-11 text-xs text-white placeholder-gray-500 outline-none focus:border-violet-500 transition" 
+                    placeholder="Type a message..."
+                  />
+                  <button 
+                    onClick={send}
+                    className="absolute right-2 bg-violet-600 hover:bg-violet-700 text-white font-bold p-2 rounded-xl transition flex items-center justify-center cursor-pointer"
+                  >
+                    <FiSend size={12} />
+                  </button>
                 </div>
               </div>
             )}
-          </div>
-
-          {/* Media Toggles Panel */}
-          <div className="dash-card flex flex-wrap gap-2 p-3">
-            <button 
-              onClick={toggleMic}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border ${
-                mic 
-                  ? 'bg-violet-600/10 border-violet-500/20 text-violet-300' 
-                  : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
-              }`}
-            >
-              {mic ? <FiMic /> : <FiMicOff />} {mic ? 'Mute' : 'Unmute'}
-            </button>
-            
-            <button 
-              onClick={toggleCamera}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border ${
-                camera 
-                  ? 'bg-violet-600/10 border-violet-500/20 text-violet-300' 
-                  : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
-              }`}
-            >
-              {camera ? <FiCamera /> : <FiCameraOff />} {camera ? 'Camera Off' : 'Camera On'}
-            </button>
-            
-            <button 
-              onClick={share}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border ${
-                screenShare 
-                  ? 'bg-emerald-600/10 border-emerald-500/20 text-emerald-300' 
-                  : 'bg-white/5 border-white/10 text-slate-300'
-              }`}
-            >
-              <FiMonitor /> {screenShare ? 'Stop share' : 'Share screen'}
-            </button>
-
-            <button 
-              className="ml-auto flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-4 py-2 rounded-lg"
-              onClick={handleLeave}
-            >
-              <FiPhoneOff /> End & Leave
-            </button>
-          </div>
-
-          {/* Collaborative Code Editor */}
-          <section className="dash-card overflow-hidden">
-            <div className="bg-black/40 border-b border-white/5 p-3 flex justify-between items-center">
-              <b className="text-xs font-bold text-white tracking-wider">COLLABORATIVE SOLUTION EDITOR</b>
-              <span className="text-[10px] bg-violet-500/15 text-violet-300 font-bold px-2 py-0.5 rounded uppercase">Realtime Sync</span>
-            </div>
-            <Editor 
-              height="340px" 
-              language="javascript" 
-              theme="vs-dark" 
-              value={code} 
-              onChange={(value) => { 
-                dispatch(setCode(value || '')); 
-                if (socket.current) {
-                  socket.current.emit('code:update', { 
-                    roomId: room.roomId, 
-                    code: value || '', 
-                    language: 'javascript' 
-                  }); 
-                }
-              }} 
-              options={{ 
-                minimap: { enabled: false }, 
-                automaticLayout: true,
-                fontSize: 13,
-                wordWrap: 'on'
-              }}
-            />
-          </section>
-        </section>
-
-        {/* Notepad & Chat Panels */}
-        <aside className="dash-card p-4 flex flex-col justify-between">
-          <div>
-            <div className="mb-4 flex gap-2 border-b border-white/5 pb-2">
-              <button 
-                onClick={() => setPanel('chat')}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition ${
-                  panel === 'chat' 
-                    ? 'bg-violet-600/15 text-violet-300' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Chat Room
-              </button>
-              <button 
-                onClick={() => setPanel('notes')}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition ${
-                  panel === 'notes' 
-                    ? 'bg-violet-600/15 text-violet-300' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Shared Notepad
-              </button>
-            </div>
-
-            {panel === 'chat' ? (
-              <div className="h-96 space-y-3 overflow-y-auto pr-1">
-                {messages.map((item, index) => (
-                  <p key={index} className="rounded-xl bg-white/5 border border-white/5 p-3 text-xs text-slate-200">
-                    <b className="text-violet-300 block mb-1">{item.sender || 'Participant'}:</b> 
-                    {item.text}
-                  </p>
-                ))}
-              </div>
-            ) : (
-              <textarea 
-                value={notes} 
-                onChange={(event) => { 
-                  dispatch(setNotes(event.target.value)); 
-                  if (socket.current) {
-                    socket.current.emit('notes:update', { 
-                      roomId: room.roomId, 
-                      notes: event.target.value 
-                    }); 
-                  }
-                }} 
-                className="h-96 w-full rounded-xl bg-black/25 border border-white/5 p-3 text-xs font-sans text-slate-100 outline-none focus:border-violet-500" 
-                placeholder="Collaborative interview notes autosave here in real-time..."
-              />
-            )}
-          </div>
-
-          {panel === 'chat' && (
-            <div className="mt-3 flex gap-2 border-t border-white/5 pt-3">
-              <input 
-                value={message} 
-                onChange={(event) => setMessage(event.target.value)} 
-                onKeyDown={(event) => event.key === 'Enter' && send()} 
-                className="min-w-0 flex-1 rounded-xl bg-black/25 border border-white/5 p-2 text-xs text-white outline-none focus:border-violet-500" 
-                placeholder="Type a message or code snippet..."
-              />
-              <button 
-                onClick={send}
-                className="bg-violet-600 hover:bg-violet-700 text-white font-bold p-2.5 rounded-xl transition"
-              >
-                <FiSend />
-              </button>
-            </div>
-          )}
-        </aside>
+          </aside>
+        )}
       </div>
     </div>
   );

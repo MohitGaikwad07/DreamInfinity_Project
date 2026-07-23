@@ -114,8 +114,13 @@ export const updateProfile = async (req, res, next) => {
     if (privacySettings !== undefined) profile.privacySettings = privacySettings;
 
     // Handle personal detail syncing to User table
-    if (req.body.name) {
-      await User.findByIdAndUpdate(userId, { name: req.body.name });
+    const userUpdates = {};
+    if (req.body.name) userUpdates.name = req.body.name;
+    if (req.body.avatarUrl !== undefined) {
+      userUpdates.avatar = { url: req.body.avatarUrl, publicId: null };
+    }
+    if (Object.keys(userUpdates).length > 0) {
+      await User.findByIdAndUpdate(userId, userUpdates);
     }
 
     await profile.save();
