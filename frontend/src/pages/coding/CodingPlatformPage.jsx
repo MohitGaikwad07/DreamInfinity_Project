@@ -228,7 +228,7 @@ export const CodingPlatformPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           
           {/* Solved Stats Card */}
-          <div className="lg:col-span-1 p-5 rounded-2xl bg-white/5 border border-white/5 backdrop-blur flex items-center justify-around gap-4 hover:border-white/10 transition-all duration-300 shadow-xl">
+          <div className="lg:col-span-1 p-5 rounded-2xl bg-white/5 border border-white/5 backdrop-blur flex flex-col sm:flex-row items-center justify-around gap-6 sm:gap-4 hover:border-white/10 transition-all duration-300 shadow-xl">
             {/* Circle Progress SVG */}
             <div className="relative flex items-center justify-center h-28 w-28 flex-shrink-0">
               <svg className="h-full w-full transform -rotate-90">

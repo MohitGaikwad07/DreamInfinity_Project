@@ -1079,3 +1079,13 @@ button { cursor: pointer; }
   -webkit-line-clamp: unset !important;
 }
 
+/* Mobile responsiveness overrides */
+@media (max-width: 520px) {
+  .quick-actions {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .stats-grid-dashboard {
+    grid-template-columns: 1fr !important;
+  }
+}

@@ -17,6 +17,12 @@ export const DashboardLayout = () => {
   
   return (
     <div className="dashboard-app">
+      {open && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden" 
+          onClick={() => setOpen(false)}
+        />
+      )}
       <Sidebar 
         open={open} 
         onClose={() => setOpen(false)} 
